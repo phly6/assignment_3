@@ -48,7 +48,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.compose.ui.text.input.ImeAction
+import kotlin.math.ceil
 
 class MainActivity : ComponentActivity() {  //Defines main activity & extends ComponentActivity
     override fun onCreate(savedInstanceState: Bundle?) {    //Sets up content when app is started. Function that is part of Android Activity Lifecycle. Called when program is first created.SavedInstanceState is a nullable parameter that can restore the app's previous state or be null.
@@ -76,7 +78,11 @@ fun EditNumberField(
     var amountInput by remember { mutableStateOf("") }  //Creates a variable that will be mutated when changed but remains across reconstructions of the UI
 
     val amount = amountInput.toDoubleOrNull() ?: 0.0    //Creates a value (amount) and parses it to double or makes it null
-    val tip = calculateTip(amount)  //Creates a value (tip) and tells it to store the result from calculateTip
+    val tip = calculateTip(
+        amount,
+        tipPercent = 15.00,
+        roundUp = false
+    )  //Creates a value (tip) and tells it to store the result from calculateTip
 
     TextField(  //Defines the way text fields will be displayed locally
         value = value,  //Defines what to show in the text field
@@ -94,7 +100,7 @@ fun TipTimeLayout() {   //Building main layout
     val tipPercent = tipInput.toDoubleOrNull() ?:0.0    //Parses tip input to double
     var amountInput by remember { mutableStateOf("") }  //Stores amount input
     val amount = amountInput.toDoubleOrNull() ?: 0.0    //Parses amount input to double
-    val tip = calculateTip(amount, tipPercent)  //Calls calculateTip function and passes amount & tipPercent
+    val tip = calculateTip(amount, tipPercent, true)  //Calls calculateTip function and passes amount & tipPercent
 
     Column( //Puts a column around content
         modifier = Modifier //Pass modifier
@@ -147,10 +153,15 @@ fun TipTimeLayout() {   //Building main layout
  */
 
 //Function to calculate the tip
-private fun calculateTip(amount: Double, tipPercent: Double = 15.0): String { //Define private function and input 2 doubles Set default tip to 15%. Return a string
-    val tip = tipPercent / 100 * amount //Define tip as result of tip calculation
+@VisibleForTesting
+internal fun calculateTip(amount: Double, tipPercent: Double = 15.0, roundUp: Boolean): String { //Define private function and input 2 doubles Set default tip to 15%. Return a string
+    var tip = tipPercent / 100 * amount //Define tip as result of tip calculation
+    if (roundUp){
+        tip = ceil(tip)
+    }
     return NumberFormat.getCurrencyInstance().format(tip)   //Return calculated tip
 }
+
 
 //Preview composable to preview UI before running emulator
 @Preview(showBackground = true)

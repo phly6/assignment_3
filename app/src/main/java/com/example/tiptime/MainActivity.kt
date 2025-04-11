@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import com.example.tiptime.ui.theme.TipTimeTheme
 import java.text.NumberFormat
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -50,11 +49,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
 import androidx.compose.ui.text.input.ImeAction
 import kotlin.math.ceil
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Switch
 import androidx.compose.foundation.layout.wrapContentWidth
 
@@ -82,14 +78,10 @@ fun EditNumberField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier) {
-    var amountInput by remember { mutableStateOf("") }
 
-    val amount = amountInput.toDoubleOrNull() ?: 0.0
-    val tip = calculateTip(
-        amount,
-        tipPercent = 15.00,
-        roundUp = false
-    )
+
+
+
 
     TextField(
         value = value,
